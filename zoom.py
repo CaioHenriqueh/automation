@@ -12,7 +12,7 @@ class Cronometro:
         self.root.title("Cronômetro")
         self.root.geometry("400x200")  # Define o tamanho da janela
         self.root.attributes("-topmost", True)  # Mantém a janela sempre no topo
-        
+       
         self.tempo_total = 240  # Tempo total em segundos (4 minutos)
         self.tempo_inicio = 60  # Tempo de início da automação em segundos (1 minuto)
         self.tempo_restante_inicio = self.tempo_inicio  # Tempo restante para início
@@ -22,16 +22,16 @@ class Cronometro:
 
         self.label_inicio = tk.Label(root, text="Automação começa em:", font=("Helvetica", 12))
         self.label_inicio.pack(pady=5)
-        
+       
         self.display_inicio = tk.Label(root, text=self.format_time(self.tempo_restante_inicio), font=("Helvetica", 24))
         self.display_inicio.pack(pady=5)
-        
+       
         self.label_termino = tk.Label(root, text="", font=("Helvetica", 12))
         self.label_termino.pack(pady=5)
-        
+       
         self.display_termino = tk.Label(root, text="", font=("Helvetica", 24))
         self.display_termino.pack(pady=5)
-        
+       
         self.start_countdown()
 
     def format_time(self, seconds):
@@ -43,6 +43,8 @@ class Cronometro:
             self.display_inicio.config(text=self.format_time(self.tempo_restante_inicio))
             self.tempo_restante_inicio -= 1
             self.root.after(1000, self.update_timer_inicio)
+        elif self.tempo_restante_inicio == 0 and not self.automacao_ativa:
+            self.start_automation()
 
     def update_timer_automacao(self):
         if self.tempo_restante_automacao > 0 and self.automacao_ativa:
@@ -54,8 +56,6 @@ class Cronometro:
 
     def start_countdown(self):
         self.update_timer_inicio()
-        if self.tempo_restante_inicio == 0:
-            self.start_automation()
 
     def start_automation(self):
         self.automacao_ativa = True
@@ -75,7 +75,7 @@ class Cronometro:
         try:
             # Simulação de inicialização da automação
             time.sleep(self.tempo_inicio)
-            
+           
             pyautogui.press("win")
             time.sleep(1)
 
@@ -93,7 +93,16 @@ class Cronometro:
 
             if img:
                 pyautogui.click(img.x, img.y)
-                time.sleep(2)
+                time.sleep(5)
+
+                pyautogui.click(x=523, y=422)
+                time.sleep(1)
+
+                pyautogui.click(x=524, y=452)
+                time.sleep(1)
+
+                pyautogui.click(x=557, y=320)
+                time.sleep(1)
 
                 pyautogui.write(id_zoom, interval=0.2)
                 pyautogui.press("enter")
@@ -101,13 +110,14 @@ class Cronometro:
 
                 pyautogui.write(pass_zoom, interval=0.2)
                 pyautogui.press("enter")
-                
+
                 # Verifica se você foi admitido na sala
                 admitted = False
                 while not admitted and self.tempo_restante_automacao > 0 and self.automacao_ativa:
-                    img_admitted = pyautogui.locateCenterOnScreen('admitted.png', confidence=0.7)
+                    img_admitted = pyautogui.locateCenterOnScreen('admtido.png', confidence=0.7)
                     if img_admitted:
                         admitted = True
+                        time.sleep(3)
                         pyautogui.hotkey('win', 'up')  # Maximiza a tela
                     else:
                         time.sleep(5)  # Espera 5 segundos antes de verificar novamente
